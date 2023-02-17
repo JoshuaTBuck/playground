@@ -1,0 +1,96 @@
+<div class="field-container">
+  <div class="field-name" *ngIf="renderWithTitle">
+    <label>{{ attributeField.attribute.name }}</label>
+  </div>
+  <div class="field-attribute" [ngSwitch]="attributeField.attribute.type">
+    <div class="boolean-attribute" *ngSwitchCase="'boolean'">
+      <select
+        class="boolean-input"
+        [(ngModel)]="attributeField.value"
+        [disabled]="!editable"
+      >
+        <option
+          [selected]="attributeField.value === undefined"
+          [ngValue]="undefined"
+        >
+          Select Value
+        </option>
+        <option
+          *ngIf="attributeField.attribute.nullable"
+          [selected]="attributeField.value === null"
+          [ngValue]="null"
+        >
+          n/a
+        </option>
+        <option [ngValue]="true">true</option>
+        <option [ngValue]="false">false</option>
+      </select>
+    </div>
+    <div class="string-attribute" *ngSwitchCase="'string'">
+      <input
+        class="string-input"
+        [(ngModel)]="attributeField.value"
+        [attr.readonly]="!editable ? true : null"
+      />
+    </div>
+    <div class="number-attribute" *ngSwitchCase="'number'">
+      <input
+        type="number"
+        class="number-input"
+        [(ngModel)]="attributeField.value"
+        [attr.readonly]="!editable ? true : null"
+      />
+    </div>
+    <div class="enum-attribute" *ngSwitchCase="'enum'">
+      <select
+        class="enum-input"
+        [(ngModel)]="attributeField.value"
+        [disabled]="!editable"
+      >
+        <option
+          [selected]="attributeField.value === undefined"
+          [ngValue]="undefined"
+        >
+          Select Value
+        </option>
+        <option
+          *ngIf="attributeField.attribute.nullable"
+          [selected]="attributeField.value === null"
+          [ngValue]="null"
+        >
+          n/a
+        </option>
+        <option
+          *ngFor="let expression of attributeField.attribute.expressions"
+          [selected]="attributeField.value === expression.key"
+          [ngValue]="expression.key"
+        >
+          {{ expression.name }}
+        </option>
+      </select>
+    </div>
+    <div class="date-attribute" *ngSwitchCase="'date'">
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="attributeField.value"
+        [attr.readonly]="!editable ? true : null"
+      />
+    </div>
+    <div class="list-attribute" *ngSwitchCase="'list'">
+      <ul class="list-disc ml-6">
+        <li *ngFor="let entry of attributeField.value">
+          <app-attribute-field
+            [attributeField]="entry"
+            [renderWithTitle]="false"
+            [editable]="editable"
+          >
+          </app-attribute-field>
+        </li>
+      </ul>
+    </div>
+    <div class="reference-attribute" *ngSwitchCase="'reference'">
+      references are not supported yet
+    </div>
+  </div>
+</div>
